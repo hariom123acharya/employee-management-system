@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Add Project</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery for AJAX -->
+    <style>
+        /* Basic reset */
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Prevent sidebar interference */
+        .main-content {
+            margin-left: 250px; /* Adjust based on your sidebar width */
+            width: calc(100% - 250px); /* Adjust the width to avoid sidebar interference */
+        }
+
+        /* Full-screen container */
+        .full-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            background-color: #f8f9fa;
+        }
+
+        /* Add Project Form Styling */
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+            width: 100%;
+            max-width: 500px; /* Adjust the width to make the form smaller */
+        }
+
+        /* Heading styling */
+        h2 {
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+
+        /* Button styling */
+        .btn-success {
+            font-size: 14px;
+            padding: 8px 15px;
+            margin-top: 15px;
+        }
+
+        /* Responsive design for smaller screens */
+        @media (max-width: 768px) {
+            .container {
+                width: 90%; /* Adjust the container width for smaller screens */
+            }
+        }
+    </style>
+
+
+</head>
+<body>
+
+{% include 'navbar.html' %}
+
+<!-- Full-screen container -->
+<div class="main-content">
+    <div class="full-screen">
+        <div class="container mt-4">
+            <h2>Add Project</h2>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="name">Project Name:</label>
+                    <input type="text" name="name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <textarea name="description" class="form-control" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="end_date">End Date:</label>
+                    <input type="date" name="end_date" class="form-control" required>
+                </div>
+
+                <div class="form-group mt-3">
+                    <label for="assigned_to">Assign to:</label>
+                    <select name="assigned_to" class="form-select" multiple required>
+                        {% for employee in employees %}
+                            <option value="{{ employee.id }}">{{ employee.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+
+                <button type="submit" class="btn btn-success">Create Project</button>
+            </form>
+            
+            
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+    $('form').on('submit', function (event) {
+        event.preventDefault(); // Prevent default form submission
+        
+        $.ajax({
+            type: "POST",
+            url: "{% url 'add_project' %}", // Correct Django URL
+            data: $(this).serialize(),
+            success: function (response) {
+                if (response.status === "success") {
+                    alert(response.message); // Show popup alert
+                    window.location.href = response.redirect_url; // ✅ Redirect correctly
+                } else {
+                    alert(response.message); // Show error message
+                }
+            },
+            error: function () {
+                alert("Something went wrong. Please try again.");
+            }
+        });
+    });
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        /* Body Styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            padding-right: 25px;
+            padding-left: 300px;
+            margin-bottom: 50px;
+        }
+
+        /* Container Styling */
+        .container {
+            width: 350px; /* Small width for the container */
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            margin-top: 50px; /* Adds space at the top */
+            margin-right: 50px; /* Adds space on the right side */
+            margin-bottom: 50px;
+        }
+
+        /* Title Styling */
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        /* Label Styling */
+        label {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        /* Input Field Styling */
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            background-color: #f9f9f9;
+        }
+
+        /* Input Field Focus Styling */
+        .input-field:focus {
+            border-color: #007bff;
+            outline: none;
+            background-color: #fff;
+        }
+
+        /* File Upload Button Styling */
+        .file-upload {
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        /* Submit Button Styling */
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* Responsive Styling */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+                margin-left: 20px;
+                margin-right: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include "navbar.html" %}
+    <div class="container">
+        <h2>User Profile</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="full_name">Full Name</label>
+                <input type="text" id="full_name" name="full_name" class="input-field" value="{{ form.full_name.value }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="position">Position</label>
+                <input type="text" id="position" name="position" class="input-field" value="{{ form.position.value }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="aadhar_number">Aadhar Number</label>
+                <input type="text" id="aadhar_number" name="aadhar_number" class="input-field" value="{{ form.aadhar_number.value }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="profile_picture">Profile Picture</label>
+                <input type="file" id="profile_picture" name="profile_picture" class="file-upload">
+            </div>
+            
+            <div class="form-group">
+                <label for="employee_id">Employee ID</label>
+                <input type="text" id="employee_id" name="employee_id" class="input-field" value="{{ form.employee_id.value }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="department">Department</label>
+                <input type="text" id="department" name="department" class="input-field" value="{{ form.department.value }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="contact_number">Contact Number</label>
+                <input type="text" id="contact_number" name="contact_number" class="input-field" value="{{ form.contact_number.value }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="dob">Date of Birth</label>
+                <input type="date" id="dob" name="dob" class="input-field" value="{{ form.dob.value }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="date_of_joining">Date of Joining</label>
+                <input type="date" id="date_of_joining" name="date_of_joining" class="input-field" value="{{ form.date_of_joining.value }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="address">Address</label>
+                <textarea id="address" name="address" class="input-field" rows="4" required>{{ form.address.value }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="receive_notifications">Receive Notifications</label>
+                <input type="checkbox" id="receive_notifications" name="receive_notifications" class="input-field" value="True" {% if form.receive_notifications.value %} checked {% endif %}>
+            </div>
+            
+            <button type="submit" class="submit-btn">Save Changes</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Employee Profile</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        /* Basic reset */
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Prevent sidebar interference by adding padding */
+        .main-content {
+            margin-left: 250px; /* Adjust based on your sidebar width */
+            width: calc(100% - 250px); /* Adjust the width to avoid sidebar interference */
+        }
+
+        /* Full screen container */
+        .full-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            background-color: #f8f9fa;
+        }
+
+        /* Profile container styling */
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+            width: 100%;
+            max-width: 400px; /* Adjust width to make the profile container smaller */
+        }
+
+        /* Heading styling */
+        h2 {
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+
+        /* Button styling */
+        .btn-warning, .btn-danger {
+            font-size: 14px;
+            padding: 6px 12px;
+            margin-top: 10px;
+        }
+
+        /* Responsive design for smaller screens */
+        @media (max-width: 768px) {
+            .container {
+                width: 90%; /* Adjust the container width for smaller screens */
+            }
+        }
+    </style>
+</head>
+<body>
+
+{% include "navbar.html" %}    
+
+<!-- Full-screen container -->
+<div class="main-content">
+    <div class="full-screen">
+        <div class="container mt-4">
+            <h2>{{ employee.name }}</h2>
+            <p>Email: {{ employee.email }}</p>
+            <p>Department: {{ employee.department }}</p>
+            <p>Role: {{ employee.role }}</p>
+            <p>Date Joined: {{ employee.date_joined }}</p>
+
+            {% if request.user.is_superuser %}
+            <a href="{% url 'edit_employee' employee.id %}" class="btn btn-warning">Edit</a>
+            <button class="btn btn-danger" onclick="deleteEmployee({{ employee.id }})">Delete</button>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    function deleteEmployee(employeeId) {
+        if (confirm("Are you sure you want to delete this employee?")) {
+            fetch(`/delete_employee/${employeeId}/`, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    alert(data.message);
+                    window.location.href = "{% url 'employee_list' %}"; // Redirect to employee list after deletion
+                } else {
+                    alert("Error deleting employee");
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    }
+</script>
+
+</body>
+</html>

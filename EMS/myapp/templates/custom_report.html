@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Report</title>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Sidebar Styling (Assumed from your other content) */
+        .sidebar {
+            width: 220px;
+            background-color: #343a40;
+            color: white;
+            padding-top: 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            padding: 12px;
+            display: block;
+        }
+
+        .sidebar a:hover {
+            background-color: #495057;
+        }
+
+        /* Main Content Styling */
+        .main-content {
+            margin-left: 220px;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            width: calc(100% - 240px); /* Make sure content doesn't interfere with the sidebar */
+            margin-top: 50px; /* To adjust for top navbar */
+        }
+
+        /* Form Styling */
+        .form-container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .btn-primary {
+            width: 100%;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #5c5959;
+            color: white;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .form-container {
+                width: 100%;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+{% include 'navbar.html' %}
+
+<!-- Main Content -->
+<div class="main-content">
+    <h2 class="text-center">Custom Report</h2>
+
+    <!-- Form Container -->
+    <div class="form-container">
+        
+        <form method="GET" action="{% url 'custom_report' %}">
+            <div class="form-group">
+                <label for="department">Department:</label>
+                <select name="department" class="form-control">
+                    <option value="All" {% if selected_department == "All" %}selected{% endif %}>All</option>
+                    <option value="HR" {% if selected_department == "HR" %}selected{% endif %}>HR</option>
+                    <option value="IT" {% if selected_department == "IT" %}selected{% endif %}>IT</option>
+                    <option value="Finance" {% if selected_department == "Finance" %}selected{% endif %}>Finance</option>
+                    <option value="Marketing" {% if selected_department == "Marketing" %}selected{% endif %}>Marketing</option>
+                </select>
+            </div>
+        
+            <div class="form-group">
+                <label for="role">Role:</label>
+                <select name="role" class="form-control">
+                    <option value="All" {% if selected_role == "All" %}selected{% endif %}>All</option>
+                    <option value="Admin" {% if selected_role == "Admin" %}selected{% endif %}>Admin</option>
+                    <option value="Manager" {% if selected_role == "Manager" %}selected{% endif %}>Manager</option>
+                    <option value="Employee" {% if selected_role == "Employee" %}selected{% endif %}>Employee</option>
+                </select>
+            </div>
+        
+            <button type="submit" class="btn btn-primary">Generate Report</button>
+        </form>
+        
+        
+    </div>
+    
+    
+
+    <!-- Table for Report Data -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Employee</th>
+                <th>Completed Tasks</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for employee, completed in report_data.items %}
+            <tr>
+                <td>{{ employee }}</td>
+                <td>{{ completed }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

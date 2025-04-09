@@ -1,0 +1,182 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>message and announcement</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+      /* Ensure the sidebar and main content don't overlap */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+}
+
+.parent-container {
+    display: flex;
+    justify-content: center; /* Centers child horizontally */
+}
+
+.container-fluid {
+    max-width: 1100px; /* Increase width */
+    margin-top: 15px;
+    padding: 20px;
+    padding-right: 200px; /* Add more space on the right side */
+    
+}
+
+
+/* Sidebar styles (positioned on the right) */
+.sidebar {
+    width: 200px; /* Adjust sidebar width as needed */
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    background-color: #343a40;
+    padding-top: 20px;
+    color: white;
+}
+
+/* Main content styling */
+.col-md-10 {
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: 20px;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+.nav-tabs .nav-link {
+    color: #495057;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.tab-content {
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+button.btn {
+    margin-top: 10px;
+}
+
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Main Content Area -->
+            <div class="col-md-10">
+                <h2>Communication Tools</h2>
+
+                <!-- Navigation for Tabs -->
+                <ul class="nav nav-tabs" id="communicationTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="notifications-tab" data-bs-toggle="tab" href="#notifications" role="tab" aria-controls="notifications" aria-selected="true">Notifications</a>
+                </li>
+               
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="announcements-tab" data-bs-toggle="tab" href="#announcements" role="tab" aria-controls="announcements" aria-selected="false">Announcements</a>
+                </li>
+                </ul>
+
+                <!-- Tab Content -->
+                <div class="tab-content mt-3" id="communicationTabsContent">
+                
+                <!-- Notifications Tab -->
+                <div class="tab-pane fade show active" id="notifications" role="tabpanel" aria-labelledby="notifications-tab">
+                    <h3>Notifications</h3>
+
+                    <!-- Show Notification Form Only for Admins -->
+                    <!-- Show Notification Form Only for Admins -->
+                    <!-- Show Notification Form Only for Admins -->
+                    {% if request.user.is_staff or request.user.is_superuser %}
+                    <h4>Create a New Notification</h4>
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{ notification_form.as_p }}
+                        <button type="submit" class="btn btn-primary" name="create_notification">Send Notification</button>
+                    </form>
+                    {% else %}
+                    <p class="text-danger">You are not authorized to send notifications.</p>
+                    {% endif %}
+
+                    <!-- List of Notifications -->
+                    <h4>All Notifications</h4>
+                    <ul>
+                    {% for notification in notifications %}
+                        <li>
+                            <p>{{ notification.message }}</p>
+                            <small>{{ notification.created_at }}</small>
+                        </li>
+                    {% empty %}
+                        <li>No notifications available.</li>
+                    {% endfor %}
+                    </ul>
+
+                </div>
+
+                <!-- Announcements Tab -->
+                <div class="tab-pane fade" id="announcements" role="tabpanel" aria-labelledby="announcements-tab">
+                    <h3>Company Announcements</h3>
+
+                    <!-- Show Announcement Form Only for Admins -->
+                    {% if announcement_form %}
+                        <h4>Create a New Announcement</h4>
+                        <form method="POST" action="{% url 'announcement_list' %}">
+                            {% csrf_token %}
+                            {{ announcement_form.as_p }}
+                            <button type="submit" class="btn btn-success" name="create_announcement">Create Announcement</button>
+                        </form>
+                        
+                    {% endif %}
+
+                    <!-- List of Announcements -->
+                    <h4>All Announcements</h4>
+                    <ul>
+                        {% for announcement in announcements %}
+                            <li>
+                                <h3>{{ announcement.title }}</h3>
+                                <p>{{ announcement.body }}</p>
+                                <small>Created by: {{ announcement.created_by.username }} on {{ announcement.created_at }}</small>
+                            </li>
+                        {% empty %}
+                            <li>No announcements available.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+
+                
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

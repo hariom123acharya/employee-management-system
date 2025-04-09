@@ -1,0 +1,14 @@
+
+<div class="container">
+    <h3>Upcoming Events</h3>
+    <ul class="list-group">
+        {% for event in events %}
+        <li class="list-group-item">
+            <strong>{{ event.summary }}</strong> 
+            <br>
+            Start: {{ event.start.dateTime }} <br>
+            End: {{ event.end.dateTime }}
+        </li>
+        {% endfor %}
+    </ul>
+</div>

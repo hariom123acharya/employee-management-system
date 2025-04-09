@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Employee Management System</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #343a40;
+            padding-top: 20px;
+            color: white;
+        }
+
+        .sidebar a {
+            padding: 10px;
+            text-decoration: none;
+            font-size: 18px;
+            color: white;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #495057;
+        }
+
+        .main-content {
+            margin-left: 260px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+        .top-bar {
+            background-color: #007bff;
+            padding: 10px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 5px;
+        }
+
+        .notifications {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .widget {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    {% include 'navbar.html' %}
+
+    <div class="main-content">
+        <div class="top-bar">
+            <h4>Welcome, <span id="username">{{ username }}</span> (<span id="user-role">{{ role }}</span>)</h4>
+
+            <div>
+                <span>Profile</span> | 
+                <span onclick="logout()" style="cursor:pointer;">Logout</span>
+            </div>
+        </div>
+
+        <br>
+
+        <div class="row">
+            {% if role == "Admin" or role == "HR" %}
+                <div class="col-md-4">
+                    <div class="widget">
+                        <h5>Total Employees</h5>
+                        <p><strong>{{ employee_count }}</strong></p>
+                    </div>
+                </div>
+            {% endif %}
+            <div class="col-md-4">
+                <div class="widget">
+                    <h5>Active Projects</h5>
+                    <p><strong id="active-project-count">{{ active_project_count }}</strong></p>
+                </div>
+            </div>
+            {% if role == "Admin" or role == "HR" %}
+                <div class="col-md-4">
+                    <div class="widget">
+                        <h5>Pending Leave Requests</h5>
+                        <p><strong>{{ pending_leaves }}</strong></p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        {% if role == "Employee" or role == "Manager" %}
+            <h3>Your Assigned Projects</h3>
+            {% if assigned_projects %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Project Name</th>
+                            <th>Status</th>
+                            <th>Deadline</th>
+                            <th>Assigned To</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for project in assigned_projects %}
+                        <tr>
+                            <td>{{ project.name }}</td>
+                            <td>
+                                <span class="badge 
+                                    {% if project.status == 'Completed' %} bg-success 
+                                    {% elif project.status == 'Active' %} bg-warning 
+                                    {% else %} bg-secondary {% endif %}">
+                                    {{ project.status }}
+                                </span>
+                            </td>
+                            <td>{{ project.deadline|default:"N/A" }}</td>
+                            <td>{{ project.assigned_to.username|default:"N/A" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No assigned projects.</p>
+            {% endif %}
+        {% endif %}
+
+        <div class="notifications">
+            <h5>Announcements</h5>
+            <ul id="announcementList">
+                {% for announcement in announcements %}
+                    <li><strong>{{ announcement.title }}</strong> - {{ announcement.body }} <br>
+                        <small>Posted on {{ announcement.created_at|date:"M d, Y" }}</small>
+                    </li>
+                {% empty %}
+                    <li>No announcements available.</li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <div class="notifications">
+            <h5>Notifications</h5>
+            <ul id="notificationList">
+                {% for notification in notifications %}
+                    <li>{{ notification.message }} <br>
+                        <small>Received on {{ notification.created_at|date:"M d, Y H:i" }}</small>
+                    </li>
+                {% empty %}
+                    <li>No new notifications.</li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+    </div>
+
+    <script>
+        function logout() {
+            fetch('/logout/', { method: 'POST', credentials: 'same-origin' })
+                .then(response => {
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    } else {
+                        alert("Logout failed, please try again.");
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        document.getElementById("username").textContent = "{{ username }}";
+        document.getElementById("user-role").textContent = "{{ role }}";
+    </script>
+
+</body>
+</html>

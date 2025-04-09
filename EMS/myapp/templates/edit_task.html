@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Task</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        /* Ensure body covers full height */
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Sidebar should not interfere */
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #343a40;
+            padding-top: 20px;
+            color: white;
+        }
+
+        /* Move content to the right */
+        .main-content {
+            margin-left: 270px; /* Adjust to prevent overlap with sidebar */
+            padding: 20px;
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            height: 100vh;
+        }
+
+        .container {
+            width: 50%;
+            max-width: 500px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        h2 {
+            color: #007bff;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    {% include 'navbar.html' %}  <!-- Include sidebar/navbar -->
+
+    <div class="main-content">
+        <div class="container">
+            <h2>Edit Task</h2>
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label">Task Name:</label>
+                    <input type="text" class="form-control" name="name" value="{{ task.name }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Description:</label>
+                    <textarea class="form-control" name="description" rows="3" required>{{ task.description }}</textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Priority:</label>
+                    <select class="form-select" name="priority" required>
+                        <option value="Low" {% if task.priority == "Low" %}selected{% endif %}>Low</option>
+                        <option value="Medium" {% if task.priority == "Medium" %}selected{% endif %}>Medium</option>
+                        <option value="High" {% if task.priority == "High" %}selected{% endif %}>High</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Status:</label>
+                    <select class="form-select" name="status" required>
+                        <option value="Not Started" {% if task.status == "Not Started" %}selected{% endif %}>Not Started</option>
+                        <option value="In Progress" {% if task.status == "In Progress" %}selected{% endif %}>In Progress</option>
+                        <option value="Completed" {% if task.status == "Completed" %}selected{% endif %}>Completed</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Deadline:</label>
+                    <input type="date" class="form-control" name="deadline" value="{{ task.deadline }}" required>
+                </div>
+
+                <button type="submit" class="btn btn-success w-10">Save Changes</button>
+                <a href="{% url 'project_details' task.project.id %}" class="btn btn-secondary w-10 mt-2">Cancel</a>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

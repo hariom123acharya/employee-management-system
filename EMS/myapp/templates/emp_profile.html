@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Dashboard Container */
+        .dashboard-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Profile Card */
+        .profile-card {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            width: 80%;
+            max-width: 800px;
+        }
+
+        .profile-card img {
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            margin-bottom: 20px;
+        }
+
+        .profile-card h2 {
+            font-size: 24px;
+            color: #333;
+        }
+
+        .profile-card p {
+            font-size: 18px;
+            color: #777;
+            margin: 5px 0;
+        }
+
+        .profile-card .info {
+            font-size: 16px;
+            color: #555;
+            margin: 5px 0;
+        }
+
+        .edit-button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .edit-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    {% include "navbar.html" %}
+    <div class="dashboard-container">
+        <div class="profile-card">
+            {% if user.profile_picture %}
+                <img src="{{ user.profile_picture.url }}" alt="Profile Picture">
+            {% else %}
+                <img src="https://via.placeholder.com/120" alt="Default Profile Picture">
+            {% endif %}
+            <h2>{{ user.full_name }}</h2>
+            <p class="info"><strong>Position:</strong> {{ user.position }}</p>
+            <p class="info"><strong>Employee ID:</strong> {{ user.employee_id }}</p>
+            <p class="info"><strong>Department:</strong> {{ user.department }}</p>
+            <p class="info"><strong>Aadhar Number:</strong> {{ user.aadhar_number }}</p>
+            <p class="info"><strong>Contact:</strong> {{ user.contact_number }}</p>
+            <p class="info"><strong>Date of Birth:</strong> {{ user.dob }}</p>
+            <p class="info"><strong>Date of Joining:</strong> {{ user.date_of_joining }}</p>
+            <p class="info"><strong>Address:</strong> {{ user.address }}</p>
+            <p class="info"><strong>Notifications:</strong> {% if user.receive_notifications %}Enabled{% else %}Disabled{% endif %}</p>
+            <a href="{% url 'user_profile' %}">
+                <button class="edit-button">Edit Profile</button>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
